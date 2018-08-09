@@ -1,0 +1,344 @@
+---
+title: Introduction to `purrr`
+subtitle: Adventures with `map`
+date: "10 August 2018"
+author: Colin Phillips <br/> Data Science Lab <br/> ![](dsyicon.jpg){width=100px}
+logo: "hex-purrr.png"
+output:
+  ioslides_presentation: 
+    incremental: true
+    widescreen: true
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## References
+
+- [Jenny Bryan's `purrr` tutorial materials](https://jennybc.github.io/purrr-tutorial)  
+    - Great primer on `purrr` - I borrowed a lot of material
+- [Official `tidyverse` website](https://purrr.tidyverse.org/)  
+    - Official documentation and user guides
+
+# History
+
+## Rough history of `purrr`: base R
+
+- In the beginning, there was the `apply` “family of functions”:
+    - `apply()`, `lapply()`, `sapply()`, `vapply()`, `mapply()`, `rapply()`, and `tapply()`
+- Problem is, you don’t know how to use them
+- No, you don’t
+    - Can never quite get the syntax right first time for each variant
+    - Outputs are not reliably in the right format
+    
+## Rough history of `purrr`: `plyr`
+
+- Along comes the `plyr` package:
+    - `aaply`, `adply`, `alply`, `a_ply`, `daply`, `ddply`, `dlply`, `d_ply`, `laply`, `ldply`, `llply`, `l_ply`, `maply`, `mdply`, `mlply`, `m_ply`
+- Some consistency!  
+    - First character is expected input format (array, dataframe, list, multiple lists)
+    - Second character is expected output format ( _ for nothing)
+- Sometimes runs quite slowly
+- No longer under active development
+- Most useful function turned out to be ddply, which led to…
+
+## Rough history of `purrr`: `dplyr` 
+
+- `dplyr` can do almost everything you really wanted to do with `plyr`! 
+    - *If* all you really wanted was to manipulate dataframes
+- What can’t it do?  
+    - Replace the `apply` functionality.  For that we need…
+
+## `purrr`: part of the core `tidyverse` {.smaller .build}
+
+- The `map` "family of functions" in `purrr` is highly internally consistent
+    - Learn once, use everywhere
+- `purrr` functions always return exactly the right type of output
+    - No more heisenbugs from inconsistent simplification
+- A new syntax for anonymous functions makes life easier
+    - Concise and hassle-free quick functions
+
+```{r load-purrr, echo = TRUE}
+library(tidyverse) # loads purrr (+ others)
+```
+
+# Why `purrr`?
+
+## `purrr::map` vs `for` loops
+
+- Is it possible to do everything that purrr can do, without purrr?
+    - Yes, but
+        - it’s ugly, error prone, and a waste of your time
+- `for` loops can do everything that `apply` can do, just not as neatly
+- `apply` functions can do everything that `purrr` can do, just not as neatly
+- Code written with `purrr` functions are neater,  cleaner, and have fewer bugs
+    - [citation needed]
+
+## The `map` function {.smaller .build}
+
+- We have a list: `.x`
+- We have a function: `.f`
+- We want to call the function `.f` on every element of the list `.x`
+    - Remember that vectors and data frames are lists!
+- Syntax: `map(.x, .f)` 
+- The `map` function will _always_ return a list
+```{r echo= TRUE} 
+map(c(3,5,8), sqrt)
+```
+# Diving in
+
+## Example dataset {.build .smaller}
+
+- Game of Thrones data
+    - Originally from [An API of Ice and Fire](https://anapioficeandfire.com/) 
+    - Conveniently available offline in the `repurrrsive` package
+
+```{r repurrrsive, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+# example datasets
+library(repurrrsive, quietly = TRUE)
+```
+
+```{r load-data, echo=TRUE}
+library(repurrrsive, quietly = TRUE) # example datasets
+library(listviewer) # to inspect lists interactively
+jsonedit(got_chars) # let's look at the dataset
+
+```
+
+## Calling a function on each element of the list
+
+Each element of the list is independently passed in as the first argument to the function
+
+```{r echo=TRUE}
+# define a function that works on a single element of our list
+count_titles = function(x) { length(x$titles) }
+# this returns a list where each element is the count of titles that the character has
+map(got_chars, count_titles)
+```
+
+## Extracting by name
+
+We can use the extract-by-name shortcut to pull out named elements of the _elements_ of our list
+
+```{r echo=TRUE}
+# use the extractor shortcut
+map(got_chars, "name")
+```
+
+## Extract by position
+
+We can use the extract-by-position shortcut to get the elements at a specific position in each of the elements in our list
+
+```{r}
+#use the extractor shortcut
+map(got_chars, 3)
+```
+
+## Note: `%>%` (pipe) syntax also works well
+
+The pipe symbol ( `%>%` ) passes the left hand side as the first argument to the right hand side
+In this case, as the first argument to `map` 
+
+```{r}
+# same as before
+got_chars %>%
+  map(3)
+```
+
+## What if I don't want a list as output? {.build}
+
+`purrr` provides *type-specific* `map` variants for targeting specific outut types.
+`purrr` does additional checks for you, and gives helpful error messages if there's a problem
+
+* `map_chr`, `map_lgl`, `map_int`, `map_dbl` 
+* for _character_, _logical_, _integer_, _numeric_ vectors
+
+```{r}
+map_chr(got_chars[1:5], "name")
+map_lgl(got_chars[1:5], "alive")
+```
+
+## Alternatively
+
+`flatten` removes the top level of hierarchy in the list.
+
+```{r}
+map(got_chars[1:5], "name") %>% flatten_chr()
+```
+It's like base R's `unlist` but safer (fails out loud)
+
+## What if I want multiple outputs? {.build .smaller}
+
+- `map` has a `...` argument to allow you to pass additional parameters to `.f`
+- Helpful hack: pass the names you want as parameters to the "`[`" function
+
+```{r}
+map(got_chars[3:8], `[`, c("name", "gender", "culture", "alive")) %>%
+  jsonedit()
+```
+
+## Can't I just have a data frame? {.build}
+
+`map_df` - if the output list's elements will all be the same _length_
+
+```{r}
+map_df(got_chars[3:8], `[`, c("name", "gender", "culture", "alive")) 
+```
+
+Notice that `map_df` automatically type converted the columns. Convenient, but not safe.
+
+## A safer, more tedious way {.build}
+
+```{r}
+got_chars[3:8] %>% {
+  tibble(
+    name = map_chr(., "name"),
+    gender = map_chr(., "gender"),
+    culture = map_chr(., "culture"),
+    alive = map_lgl(., "alive")
+  )
+}
+```
+
+
+## What if the data I need is nested?
+
+A trick with the extractor shortcut - provide a list of how to proceed.
+
+```{r}
+# for each character, get the first element of the povBooks vector for that character
+got_chars %>%
+  map_chr(list("povBooks", 1))
+```
+
+## Different ways of specifying `.f` 
+
+Pre-define the function
+
+```{r}
+make_titles = function(x, collapse) { paste(x$titles, collapse = collapse) }
+got_chars[1:3] %>%
+  map_chr(make_titles, ", ")
+```
+
+## Different ways of specifying `.f` 
+
+Define an inline (anonymous) function
+
+```{r}
+got_chars[1:3] %>%
+  map_chr(function(x, collapse) { paste(x$titles, collapse = collapse) }, ", ")
+```
+
+## Different ways of specifying `.f` 
+
+`purrr`'s formula syntax
+
+```{r}
+got_chars[1:3] %>%
+  map_chr( ~ paste(.x$titles, collapse = ", "))
+```
+
+Use `.x` to refer to the data
+
+## Build a data frame from your list interactively {.smaller}
+
+Use the `enframe` function, then add columns as necessary
+
+```{r}
+got_chars[7:10] %>%
+  set_names(map_chr(got_chars[7:10], "name", "value")) %>% # give each list element a name
+  enframe() %>% # treat list as data frame
+  mutate(born = map_chr(value, "born"),
+         alive = map_lgl(value, "alive")) # use mutate to call map functions on list columns
+```
+
+## We can also map over multiple lists together
+
+`map2` (and `map2_dbl`, `map2_chr`, `map2_df` etc.) allows you to call a function on two lists in parallel
+
+Syntax: `map2(.x, .y, .f, ...)`
+
+```{r}
+got_names = got_chars %>% map("name")
+got_born = got_chars %>% map("born")
+map2_chr(got_names, got_born, ~ paste(.x, "was born", .y, sep = " "))
+```
+
+
+## What if we need to process many lists in parallel?
+
+`pmap` takes a list of input lists
+Use `..1`, `..2`, `..3`, etc in formulae to refer to arguments, or predefine your function
+
+```{r}
+got_names = got_chars %>% map("name")
+got_born = got_chars %>% map("born")
+got_alive = got_chars %>% map("alive")
+pmap_chr(list(got_names, got_born, got_alive), ~ paste(
+  ..1, "was born", 
+  ..2, "and is", 
+  ifelse(..3, "still alive", "now dead"), 
+  sep = " "))
+```
+
+
+## Working with just part of the list
+
+`map_at` and `map_if` allow you to specify a _predicate function_ to decide which elements get processed.  Saves a lot of typing!
+
+```{r}
+1:5 %>% map_if(~ .x %% 2 == 0, function(z){ z/2}) %>% flatten_dbl()
+1:5 %>% map_at(c(1,3,5), ~ 3 * .x + 1) %>% flatten_dbl()
+```
+
+## Turning a list "inside out"
+
+`transpose` turns a pair of lists into a list of pairs, and vice versa
+
+```{r}
+pair_of_lists = list(a = list(1,2,3), b = list(4,5,6))
+(list_of_pairs = transpose(pair_of_lists))
+```
+## Turning a list "inside out"
+
+`transpose` turns a pair of lists into a list of pairs, and vice versa
+
+```{r}
+list_of_pairs = list(list(a = 1, b = 4), 
+                     list(a = 2, b = 5), 
+                     list(a = 3, b = 6))
+(pair_of_lists = transpose(list_of_pairs))
+```
+
+## Other useful features
+
+I haven't used these myself but they are good to know about
+
+* `modify` (`modify_if`, `modify_at`, `modify_depth`) for making changes to list elements
+* `walk` (`walk2`, `pwalk`) for calling a function for side-effects
+* `imap` for working with both the list elements and the index of the elements
+* `lmap` for working with sub-lists rather than list elements
+* `accumulate` and `reduce` for summarising lists into a single value iteratively
+* `invoke_map` for calling a list of functions, each with potentially different arguments 
+
+
+## Recap
+
+We've seen that `purrr` allows us to:
+
+* Call functions on each element of an arbitrary list
+* Extract single values at any point in the hierarchy by name or position
+* Get type-safe outputs
+* Define and call functions
+    * On the every element of the list
+    * On parts of the list
+    * On multiple lists in parallel
+* Transform the structure of a list
+
+# `purrr`
+
+![](hex-purrr.png){width=300px}
