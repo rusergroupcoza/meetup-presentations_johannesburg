@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 - [Jenny Bryan's `purrr` tutorial materials](https://jennybc.github.io/purrr-tutorial)  
     - Great primer on `purrr` - I borrowed a lot of material
 - [Official `tidyverse` website](https://purrr.tidyverse.org/)  
-    - Official documentation and user guides
+    - Documentation and user guides
 
 # History
 
@@ -69,7 +69,7 @@ library(tidyverse) # loads purrr (+ others)
 
 ## `purrr::map` vs `for` loops
 
-- Is it possible to do everything that purrr can do, without purrr?
+- Is it possible to do everything that `purrr` can do, without `purrr`?
     - Yes, but
         - it’s ugly, error prone, and a waste of your time
 - `for` loops can do everything that `apply` can do, just not as neatly
