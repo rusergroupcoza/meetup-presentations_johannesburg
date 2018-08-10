@@ -1,0 +1,353 @@
+---
+title: "Product Plots"
+subtitle: "By Hadley Wickham and Heike Hofmann"
+author: "Jess Rees, Data Science Lab"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+always_allow_html: yes
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+    toc: yes
+    toc_depth: 3
+  html_notebook:
+    code_folding: show
+    fig_height: 8
+    fig_width: 12
+    highlight: tango
+    theme: cerulean
+    toc: yes
+    toc_float: yes
+  html_document:
+    fig_height: 8
+    fig_width: 12
+    toc: yes
+    toc_depth: 4
+  word_document:
+    toc: yes
+---
+
+## Framework 
+Explained in detail in http://vita.had.co.nz/papers/prodplots.pdf
+![paper examples](C:/Users/jessica52/Desktop/WORKSTUFF/presentations/productplots/header.png)
+
+A new framework for visualising tables of counts, proportions and probabilities. Foundations:
+
+* computation of area as a product of height and width
+* statistical concept of generating a joint distribution from the product of conditional and marginal distributions
+
+Focusses on area charts, where the area of a graphical element is proportional to the underlying count, proportion, or probability. Key development of the products plot framework is the inverse operation: the factorisation of high-dimensional data to products of low-dimensional plots.
+
+### Constraints:
+
+* **area must be proportional to count** (or proprtion, or probability)
+* **partitions must be disjoint**; to see the complete area, each rectangle must be non-overlapping. This does not imply that the tiling must be space-filling
+* **partitions must be rectangular**, because then many  perceptual tasks only require comparing lengths, or positions along a common scale; these tasks are generally easier than comparing areas. Rectangles are also computationally simple, recursive (we can always tile a rectangle with smaller rectangles), and used in many existing visualisations.
+
+### Primitives:
+
+* **bars (1d)**: *height is proportional to value*, while width equally divides space. Can be horizontally (hbar) or vertically (vbar) arranged.
+* **spines (1d)**: *width is proportional to value*, and height fills the range. Space-filling. Can be horizontally (hspine) or vertically (vspine) arranged, or automatically by splitting the largest dimension (spine).
+* **tiles (1d)**: *area is proportional to value*, with no restrictions on height or width other than trying to keep the aspect ratio of each rectangle close to 1.
+* **fluct (2d)**: has *height and width proportional to the square root of the value*. Each rectangle is arranged on a regular grid formed by the levels of the two variables, allowing comparisons both vertically and horizontally.
+
+Note: Bars and spines are indistinguishable when the underlying data is evenly distributed across the categories. Comparison is the easiest with bars (comparing positions on a common scale). But spines and tiles work better recursively, since they occupy the complete space.
+
+### Plots that fit into this framework:
+
+* bar chart (1 hbar)
+* column chart (1 vbar)
+* spine plot (1 spine)
+* fluctuation (1 fluct)
+* stacked bar chart (1 hbar and 1 vspine)
+* nested bar chart (2 hbars)
+* equal bin size plot (1 fluct and 1 vspine)
+* mosaic plot (alternating hspines and vspines)
+* double decker plot (n-1 hspines and 1 vspine)
+* treemap (n spines)
+* squarified treemap (n tiles)
+* generalised treemap (any plot ending with a tile)
+
+## Plot display
+
+For labelling, use a combination of colour and axis labels. **Axis labelling is not very well supported in the package**. Tool tips may be very helpful.
+
+## Extensions
+
+### Continuous data
+**Continuous data can be binned** to make them discrete, either into bins of equal width, or bins with an equal number of points. Leads to histograms (analogue to bar chart) and spinograms (analogue to spine chart)
+
+### Non-rectangular partitions
+
+Radial plots can be seen as **polar transformations** of product plots. For example, a pie chart is an hspine drawn in polar coordinates with the x-coordinate mapped to angle and the y-coordinate to radius. Generally, the y axis (mapped to radius) must be square-root transformed to ensure that that counts stay proportional to areas.
+
+* concentric pie chart (1 hspine)
+* doughnut plot (1 hspine and 1 vspine)
+* racetrack plot (1 vbar)
+* infoslices (n vbars, using half of the polar plane)
+
+Note that research suggests that **visualisations in polar coordinates are harder to read accurately than visualisations in Cartesian coordinates**.
+
+# Using the package
+
+Available from http://github.com/hadley/productplots. Two main functions:
+
+* **prodcalc**: computes the coordinates of each rectangle
+* **prodplot**: displays the rectangles with ggplot2
+
+Each graphical primitive is represented by a function: **hspine(), vspine(), spine(), hbar(), vbar(), tile(), and fluct()**.
+
+```{r setup, echo=TRUE,error=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#devtools::install_github("hadley/productplots")
+library(productplots)
+library(plyr)
+library(tidyverse)
+library(ggplot2)
+```
+
+## Examples from the paper
+
+Using the happiness dataset:
+
+```{r happinessdata, echo=TRUE,error=FALSE,warning=FALSE}
+d <- load("happy.rda") # downloaded from github; reference directory as needed
+happy <- happy %>% filter(!is.na(happy))
+head(happy)
+```
+
+### Basic examples
+```{r baseegs-prodcalc, echo=TRUE,error=FALSE,warning=FALSE}
+prodcalc(happy, ~ happy, "hbar")
+```
+
+
+```{r baseegs, echo=TRUE,error=FALSE,warning=FALSE}
+prodplot(happy, ~ happy, "hbar") + aes(fill=happy)+ 
+  scale_fill_brewer(palette="Spectral")  
+
+prodplot(happy, ~ happy, "hspine") + aes(fill=happy)+ 
+  scale_fill_brewer(palette="Spectral")  
+
+prodplot(happy, ~ sex + happy, c("vspine", "hbar")) + aes(fill=sex)+ 
+  scale_fill_brewer(palette="Spectral")  
+
+prodplot(happy, ~ sex + happy, stacked()) + aes(fill=happy)+ 
+  scale_fill_brewer(palette="Spectral")  
+
+prodplot(happy %>% filter(!is.na(health)), ~ happy + sex | health, mosaic("h")) + 
+  aes(fill=happy) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  scale_fill_brewer(palette="Spectral")  
+```
+
+### More complex examples
+We'll use **fluct and spines to see the relationship between happiness, health, and financial status**.
+
+#### f(happy,health, finrela), partitioned with a vspine and fluct
+f(happy,health, finrela) = f(happy|health, finrela) x f(health, finrela)
+
+```{r happhealthfinrela-basic, echo=TRUE,error=FALSE,warning=FALSE}
+newhappy <- happy %>%
+  mutate(finrela = as.factor(finrela)) %>%
+  filter(!is.na(happy)) %>%
+  filter(!is.na(finrela)) %>%
+  filter(!is.na(health))
+
+prodplot(newhappy, ~ happy + finrela + health, c("vspine", "fluct")) +
+  aes(fill=happy) + 
+  scale_fill_brewer(palette="Spectral")  
+```
+This plot displays raw proportions, showing that most people are in good health and average financial standing. However, it is difficult to see how happiness varies within these conditions because we must compare areas, not positions.
+
+Health is on the x-axis, financial status on the y-axis. **But the labels are not right...**
+
+```{r happhealthfinrela-details, echo=TRUE,error=FALSE,warning=FALSE}
+# instead of calling prodplot (https://github.com/hadley/productplots/blob/master/R/plot.r), we go through it step by step
+# this is all just what the function would do
+levels = -1L
+cascade=0
+scale_max = T
+na.rm = F
+data = newhappy
+
+formula = as.formula("~ happy + finrela + health") # same formula as above
+vars <- parse_product_formula(formula) 
+p <- length(c(vars$cond, vars$marg))
+
+divider <- c("vspine", "fluct") # same as above
+if (is.function(divider)) divider <- divider(p)
+div_names <- divider
+if (is.character(divider)) divider <- llply(divider, match.fun)
+
+# https://github.com/hadley/productplots/blob/master/R/calculate.r
+res <- prodcalc(data, formula, divider, cascade, scale_max, na.rm = na.rm) # available from product plots
+
+if (!(length(levels) == 1 && is.na(levels))) {
+  levels[levels < 0] <-  max(res$level) + 1 + levels[levels < 0]
+  res <- res[res$level %in% levels, ]
+}
+
+# here is where we change it; prodplot calls "draw", but we need a new draw function
+df = list(data=res, formula=formula, divider=div_names)
+alpha = 1
+colour = "grey30"
+subset = NULL
+data <- df$data
+
+# look at data
+data
+
+finrelabels = data %>%
+  group_by(finrela) %>%
+  filter(b == min(b)) %>% # want the label at the bottom of the block
+  select(finrela, b) %>%
+  distinct()
+
+plot <- ggplot(data,
+  ggplot2::aes_string(xmin = "l", xmax = "r", ymin = "b", ymax = "t")) +
+  scale_y_product(df) + # from prodplots package
+  scale_x_continuous(breaks = data$l, labels = data$health) + # put health labels at left of block
+  scale_y_continuous(breaks = finrelabels$b, labels = finrelabels$finrela) # put finrela labels at bottom of block
+
+# now we have to actually add the rectangles
+levels <- split(data, data$level) # in this case, we only have 1
+for (level in levels) {
+  plot <- plot + geom_rect(data = level, colour = colour, alpha = alpha) #
+}
+
+plot +
+  aes(fill=happy) + # as before
+  scale_fill_brewer(palette="Spectral")
+
+```
+
+**Now let's (kind of) generalise the code...**
+
+```{r happhealthfinrela-gen, echo=TRUE,error=FALSE,warning=FALSE}
+
+myprodplot <- function(data, str_formula, divider, forx, fory, forfill) {
+  levels = -1L
+  cascade=0
+  scale_max = T
+  na.rm = F
+  alpha = 1
+  colour = "grey30"
+  subset = NULL
+  
+  formula = as.formula(str_formula)
+  vars <- parse_product_formula(formula) 
+  p <- length(c(vars$cond, vars$marg))
+  
+  if (is.function(divider)) divider <- divider(p)
+  div_names <- divider
+  if (is.character(divider)) divider <- llply(divider, match.fun)
+  
+  res <- prodcalc(data, formula, divider, cascade, scale_max, na.rm = na.rm)
+  
+  if (!(length(levels) == 1 && is.na(levels))) {
+    levels[levels < 0] <-  max(res$level) + 1 + levels[levels < 0]
+    res <- res[res$level %in% levels, ]
+  }
+  
+  df = list(data=res, formula=formula, divider=div_names)
+  data <- df$data
+  
+  colnum = which(colnames(data)==fory)
+  colnames(data)[colnum] <- "y"
+  ylabels = data %>%
+    group_by(y) %>%
+    filter(b == min(b)) %>% 
+    select(y, b) %>%
+    distinct()
+  
+  colnum = which(colnames(data)==forx)
+  colnames(data)[colnum] <- "x"
+  xlabels = data %>%
+    group_by(x) %>%
+    filter(l == min(l)) %>% 
+    select(x, l) %>%
+    distinct()
+    
+  plot <- ggplot(data,
+    ggplot2::aes_string(xmin = "l", xmax = "r", ymin = "b", ymax = "t")) +
+    scale_y_product(df) + 
+    scale_x_continuous(breaks = xlabels$l, labels = xlabels$x) + 
+    scale_y_continuous(breaks = ylabels$b, labels = ylabels$y)
+  
+  levels <- split(data, data$level) 
+  for (level in levels) {
+    plot <- plot + geom_rect(data = level, colour = colour, alpha = alpha) 
+  }
+  
+  plot <- plot +
+    ggplot2::aes_string(fill=forfill) + 
+    xlab(forx) +
+    ylab(fory) + 
+    scale_fill_brewer(palette="Spectral")
+  
+  return(plot)
+}
+
+p = myprodplot(newhappy, "~ happy + finrela + health", c("vspine", "fluct"), "health", "finrela", "happy")
+p
+```
+
+#### f(happy | health, finrela), partitioned with a vspine and fluct
+
+```{r condfinhealth-orig, echo=TRUE,error=FALSE,warning=FALSE}
+prodplot(newhappy, ~ happy | finrela + health, c("vspine", "fluct")) +
+  aes(fill=happy) + 
+  scale_fill_brewer(palette="Spectral")  
+```
+
+**Again, the labels are not what we need...**
+
+```{r condfinhealth-myfunc, echo=TRUE,error=FALSE,warning=FALSE}
+p = myprodplot(newhappy, "~ happy | finrela + health", c("vspine", "fluct"), "health", "finrela", "happy")
+p
+```
+
+We can no longer see the joint distribution of health and financial status, but it is much easier to see the conditional distribution of happiness. Healthier and richer people are happier: maybe money does buy happiness?
+
+Conditioning on financial status and health produces this plot (equal bin size plot) and makes it easier to see the conditional distribution of happiness given sex and health, because comparing positions along a common scale is an easier perceptual task. Depending on the comparison we are most interested in, we can make it easier to compare across wealth given health, or health given wealth, as in the next figure. 
+
+#### f(happy | health, finrela), partitioned with a hspine and fluct
+
+```{r condhealthfin-orig, echo=TRUE,error=FALSE,warning=FALSE}
+prodplot(newhappy, ~ happy | finrela + health, c("hspine", "fluct"))+
+  aes(fill=happy) +
+  scale_fill_brewer(palette="Spectral")  
+```
+
+**Label issues...**
+
+```{r condhealthfin-myfunc, echo=TRUE,error=FALSE,warning=FALSE}
+p = myprodplot(newhappy, "~ happy | finrela + health", c("hspine", "fluct"), "health", "finrela", "happy")
+p
+```
+
+f(happy | health, finrela) partitioned with a fluct and hspine, emphasizing the relationship of happiness with finances, whereas the previous plot emphasizes the relationship with health. 
+
+Here we see that for a fixed income level, better health is correlated to increased happiness. The same is not true for a fixed level of health: rich people with poor health seem to be less happy than poorer people in poor health.
+
+## Using gapminder data
+```{r gapminder-data,error=FALSE,warning=FALSE, echo=TRUE}
+library(gapminder)
+gm = gapminder
+
+# first need to discretise
+gm$yearcat = cut(gm$year, c(1950, 1960, 1970, 1980, 1990, 2000, 2010))
+gm$lifeExpCat = cut(gm$lifeExp, c(20, 30, 40, 50, 60, 70, 80, 90))
+gm$popCat = cut(gm$pop, c(0, 1000000, 10000000, 100000000, 1000000000, 10000000000))
+gm$gdpPercapCat = cut(gm$gdpPercap, c(0, 2000, 4000, 6000, 8000, 10000, 50000, 100000, 150000))
+
+p = myprodplot(gm, "~ lifeExpCat + yearcat + gdpPercapCat", c("vspine", "fluct"), "gdpPercapCat", "yearcat", "lifeExpCat") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p
+
+r = myprodplot(gm, "~ lifeExpCat + yearcat + gdpPercapCat", c("fluct", "vspine"), "gdpPercapCat", "yearcat", "lifeExpCat") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+r
+
+q = myprodplot(gm, "~ gdpPercapCat | yearcat + continent", c("vspine", "fluct"), "continent", "yearcat", "gdpPercapCat") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+q
+```
