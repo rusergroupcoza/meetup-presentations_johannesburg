@@ -4,8 +4,9 @@
     <title>Introduction to R</title>
     <meta charset="utf-8">
     <meta name="author" content="Gemma Dawson and Luis de Sousa" />
-    <link href="libs/remark-css/default.css" rel="stylesheet" />
-    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/kunoichi.css" type="text/css" />
+    <link rel="stylesheet" href="assets/ninpo.css" type="text/css" />
+    <link rel="stylesheet" href="assets/ninjutsu.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -131,14 +132,14 @@ head(survey_data)
 
 ```
 ## # A tibble: 6 x 682
-##   SubsID responseid respid dCOUNTRY fQ1bGender foQ1aAge_1 dAge  Q2Kids_1
-##   &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl+lb&gt; &lt;dbl+lbl&gt;       &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-## 1 21888~        345    347 1        1                  68 3            2
-## 2 23586~        185    187 1        1                  51 2            2
-## 3 23739~        108    110 1        2                  57 3            2
-## 4 25015~        524    526 1        2                  53 2            2
-## 5 25405~        349    351 1        2                  25 1            2
-## 6 20004~        823    825 1        2                  54 2            1
+##   SubsID  responseid respid dCOUNTRY fQ1bGender foQ1aAge_1 dAge   Q2Kids_1
+##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl+lb&gt; &lt;dbl+lbl&gt;       &lt;dbl&gt; &lt;dbl+&gt;    &lt;dbl&gt;
+## 1 218884…        345    347 1        1                  68 3             2
+## 2 235864…        185    187 1        1                  51 2             2
+## 3 237393…        108    110 1        2                  57 3             2
+## 4 250156…        524    526 1        2                  53 2             2
+## 5 254053…        349    351 1        2                  25 1             2
+## 6 200042…        823    825 1        2                  54 2             1
 ## # ... with 674 more variables: Q2Kids_2 &lt;dbl&gt;, Q2Kids_3 &lt;dbl&gt;,
 ## #   dKIDS &lt;dbl+lbl&gt;, Q3 &lt;dbl+lbl&gt;, dNET &lt;dbl+lbl&gt;, fQ2UKRegion &lt;dbl+lbl&gt;,
 ## #   dRegionUK &lt;dbl+lbl&gt;, fQ2FRRegion &lt;dbl+lbl&gt;, dRegionFR &lt;dbl+lbl&gt;,
@@ -171,7 +172,7 @@ head(survey_data)
 ## #   Q25A_7 &lt;dbl+lbl&gt;, Q25A_8 &lt;dbl+lbl&gt;, Q25A_9 &lt;dbl+lbl&gt;,
 ## #   Q25A_10 &lt;dbl+lbl&gt;, Q25A_11 &lt;dbl+lbl&gt;, Q25A_12 &lt;dbl+lbl&gt;,
 ## #   Q25A_13 &lt;dbl+lbl&gt;, Q25A_14 &lt;dbl+lbl&gt;, Q25A_15 &lt;dbl+lbl&gt;,
-## #   Q25A_16 &lt;dbl+lbl&gt;, Q25A_95 &lt;dbl+lbl&gt;, ...
+## #   Q25A_16 &lt;dbl+lbl&gt;, Q25A_95 &lt;dbl+lbl&gt;, …
 ```
 
 ```r
@@ -182,14 +183,14 @@ head(labelled_survey_data)
 
 ```
 ## # A tibble: 6 x 682
-##   SubsID responseid respid dCOUNTRY fQ1bGender foQ1aAge_1 dAge  Q2Kids_1
-##   &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;    &lt;fct&gt;           &lt;dbl&gt; &lt;fct&gt;    &lt;dbl&gt;
-## 1 21888~        345    347 UK       Male               68 55+          2
-## 2 23586~        185    187 UK       Male               51 35-54        2
-## 3 23739~        108    110 UK       Female             57 55+          2
-## 4 25015~        524    526 UK       Female             53 35-54        2
-## 5 25405~        349    351 UK       Female             25 16-34        2
-## 6 20004~        823    825 UK       Female             54 35-54        1
+##   SubsID   responseid respid dCOUNTRY fQ1bGender foQ1aAge_1 dAge  Q2Kids_1
+##   &lt;chr&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;    &lt;fct&gt;           &lt;dbl&gt; &lt;fct&gt;    &lt;dbl&gt;
+## 1 21888465        345    347 UK       Male               68 55+          2
+## 2 23586407        185    187 UK       Male               51 35-54        2
+## 3 23739306        108    110 UK       Female             57 55+          2
+## 4 25015655        524    526 UK       Female             53 35-54        2
+## 5 25405304        349    351 UK       Female             25 16-34        2
+## 6 20004255        823    825 UK       Female             54 35-54        1
 ## # ... with 674 more variables: Q2Kids_2 &lt;dbl&gt;, Q2Kids_3 &lt;dbl&gt;,
 ## #   dKIDS &lt;fct&gt;, Q3 &lt;fct&gt;, dNET &lt;fct&gt;, fQ2UKRegion &lt;fct&gt;, dRegionUK &lt;fct&gt;,
 ## #   fQ2FRRegion &lt;fct&gt;, dRegionFR &lt;fct&gt;, fQ2DERegion &lt;fct&gt;,
@@ -214,7 +215,7 @@ head(labelled_survey_data)
 ## #   Q25A_1 &lt;fct&gt;, Q25A_2 &lt;fct&gt;, Q25A_3 &lt;fct&gt;, Q25A_4 &lt;fct&gt;, Q25A_5 &lt;fct&gt;,
 ## #   Q25A_6 &lt;fct&gt;, Q25A_7 &lt;fct&gt;, Q25A_8 &lt;fct&gt;, Q25A_9 &lt;fct&gt;, Q25A_10 &lt;fct&gt;,
 ## #   Q25A_11 &lt;fct&gt;, Q25A_12 &lt;fct&gt;, Q25A_13 &lt;fct&gt;, Q25A_14 &lt;fct&gt;,
-## #   Q25A_15 &lt;fct&gt;, Q25A_16 &lt;fct&gt;, Q25A_95 &lt;fct&gt;, ...
+## #   Q25A_15 &lt;fct&gt;, Q25A_16 &lt;fct&gt;, Q25A_95 &lt;fct&gt;, …
 ```
 
 ```r
@@ -279,7 +280,7 @@ cities
 
 ```
 ## # Source:   table&lt;City&gt; [?? x 5]
-## # Database: mysql 10.0.17-MariaDB
+## # Database: mysql 5.5.5-10.0.17-MariaDB
 ## #   [guest@shiny-demo.csa7qlmguqrf.us-east-1.rds.amazonaws.com:/shinydemo]
 ##       ID Name           CountryCode District      Population
 ##    &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;              &lt;dbl&gt;
@@ -314,12 +315,12 @@ head(crime_data)
 ## # A tibble: 6 x 12
 ##   category persistent_id date    lat    long street_id street_name context
 ##   &lt;chr&gt;    &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;  
-## 1 anti-so~ ""            2018~  51.5 -0.114  960854    On or near~ ""     
-## 2 anti-so~ ""            2018~  51.5 -0.0826 961467    On or near~ ""     
-## 3 anti-so~ ""            2018~  51.5 -0.0826 961467    On or near~ ""     
-## 4 anti-so~ ""            2018~  51.5 -0.0820 968664    On or near~ ""     
-## 5 anti-so~ ""            2018~  51.5 -0.101  961239    On or near~ ""     
-## 6 anti-so~ ""            2018~  51.5 -0.0938 964580    On or near~ ""     
+## 1 anti-so… ""            2018…  51.5 -0.114  960854    On or near… ""     
+## 2 anti-so… ""            2018…  51.5 -0.0826 961467    On or near… ""     
+## 3 anti-so… ""            2018…  51.5 -0.0826 961467    On or near… ""     
+## 4 anti-so… ""            2018…  51.5 -0.0820 968664    On or near… ""     
+## 5 anti-so… ""            2018…  51.5 -0.101  961239    On or near… ""     
+## 6 anti-so… ""            2018…  51.5 -0.0938 964580    On or near… ""     
 ## # ... with 4 more variables: id &lt;chr&gt;, location_type &lt;chr&gt;,
 ## #   location_subtype &lt;chr&gt;, outcome_status &lt;chr&gt;
 ```
@@ -380,6 +381,7 @@ head(crime_data)
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
+"ratio": "16:9",
 "highlightStyle": "github",
 "highlightLines": true,
 "countIncrementalSlides": false
