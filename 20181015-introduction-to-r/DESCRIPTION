@@ -1,0 +1,9 @@
+Package: website
+Type: Package
+Title: Introduction to R
+Version: 0.0.1
+Authors@R: person(given="Gemma", family="Dawson"),
+	person(given="Luis", family="de Sousa")	
+Description: This is a dummy travis package.
+Depends: blogdown, devtools, tidyverse, emitanaka/xaringan, emitanaka/icon, emitanaka/anicon
+LazyData: TRUE
