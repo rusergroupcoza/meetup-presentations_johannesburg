@@ -21,6 +21,24 @@ class: center, middle, inverse, title-slide
 
 
 
+class: split-70 hide-slide-number
+background-image: url("imgs/HEAD-Top-data-visualization-tools-for-small-business.png")
+background-size: cover
+
+.column.slide-in-left[
+.sliderbox.vmiddle.shade_main.center[
+.font5[Visualise]]]
+.column[
+]
+
+---
+
+# Data Visualisation
+
+![dataviz](imgs/data-viz.jpg) 
+
+---
+
 # ggplot2
 
 * Combine your data wrangling and chart making into one single process no more pasting data from excel into powerpoint to make or change a chart!
@@ -32,11 +50,144 @@ class: center, middle, inverse, title-slide
 
 ---
 
-# Data Visulisations
+# With Info
 
-![dataviz](imgs/data-viz.jpg) 
+
+```r
+p &lt;- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+![](imgs/with-info-1.svg)&lt;!-- --&gt;
 
 ---
+
+# With more info
+
+
+```r
+p &lt;- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+![](imgs/with-more-info-1.svg)&lt;!-- --&gt;
+
+---
+
+# With even more info
+
+
+```r
+p &lt;- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+![](imgs/with-even-more-info-1.svg)&lt;!-- --&gt;
+
+---
+
+# With different facets
+
+
+```r
+p &lt;- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+![](imgs/with-different-facets-1.svg)&lt;!-- --&gt;
+
+---
+
+# With trend lines
+
+
+```r
+p &lt;- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+![](imgs/with-trend-lines-1.svg)&lt;!-- --&gt;
+
+---
+
+# **Import** + Transform + Visualise
+
+
+```r
+#https://africaopendata.org/dataset/municipal-demarcation-board-national-boundary-data/resource/9a348186-47d6-4c98-acd4-92b9bf8c1745
+library(sf)
+geo &lt;- st_read("data/LocalMunicipalities2011.shp", quiet = TRUE)
+geo
+```
+
+```
+## Simple feature collection with 234 features and 12 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 16.45189 ymin: -34.83417 xmax: 32.94498 ymax: -22.12503
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## First 10 features:
+##    PROVINCE CATEGORY                      CAT2 CAT_B            MUNICNAME
+## 1        EC        A Metropolitan Municipality   BUF         Buffalo City
+## 2        EC        B        Local Municipality EC101             Camdeboo
+## 3        EC        B        Local Municipality EC102     Blue Crane Route
+## 4        EC        B        Local Municipality EC103               Ikwezi
+## 5        EC        B        Local Municipality EC104               Makana
+## 6        EC        B        Local Municipality EC105              Ndlambe
+## 7        EC        B        Local Municipality EC106 Sundays River Valley
+## 8        EC        B        Local Municipality EC107             Baviaans
+## 9        EC        B        Local Municipality EC108                Kouga
+## 10       EC        B        Local Municipality EC109            Kou-Kamma
+##                                  MAP_TITLE DISTRICT     AREA Shape_Leng
+## 1   Buffalo City Metropolitan Municipality      BUF  2535.93   4.458223
+## 2              Camdeboo Local Municipality     DC10 12422.10   7.017927
+## 3      Blue Crane Route Local Municipality     DC10 11068.60   6.680793
+## 4                Ikwezi Local Municipality     DC10  4562.73   4.022355
+## 5                Makana Local Municipality     DC10  4375.63   4.733910
+## 6               Ndlambe Local Municipality     DC10  1840.63   2.772036
+## 7  Sundays River Valley Local Municipality     DC10  5993.52   5.908896
+## 8              Baviaans Local Municipality     DC10 11668.30   6.487536
+## 9                 Kouga Local Municipality     DC10  2669.82   3.491314
+## 10            Kou-Kamma Local Municipality     DC10  3642.02   4.126653
+##    Shape_Area MapNo  MUN_CD                       geometry
+## 1   0.2445463     1   (BUF) MULTIPOLYGON (((27.91716 -3...
+## 2   1.1903525     4 (EC101) MULTIPOLYGON (((24.43986 -3...
+## 3   1.0653265     5 (EC102) MULTIPOLYGON (((26.16564 -3...
+## 4   0.4402566     6 (EC103) MULTIPOLYGON (((25.05106 -3...
+## 5   0.4232914     7 (EC104) MULTIPOLYGON (((26.59392 -3...
+## 6   0.1786392     8 (EC105) MULTIPOLYGON (((26.925 -33....
+## 7   0.5816143     9 (EC106) MULTIPOLYGON (((26.03724 -3...
+## 8   1.1293370    10 (EC107) MULTIPOLYGON (((23.19537 -3...
+## 9   0.2602457    11 (EC108) MULTIPOLYGON (((24.66482 -3...
+## 10  0.3548637    12 (EC109) MULTIPOLYGON (((23.7033 -33...
+```
+
+---
+
+# Import + Transform + **Visualise**
+
+
+```r
+ggplot() + geom_sf(data = geo)
+```
+
+![](imgs/unnamed-chunk-7-1.svg)&lt;!-- --&gt;
+
+---
+
+# Import + **Transform** + Visualise
+
+
+
+---
+
+# Import + Transform + **Visualise**
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
