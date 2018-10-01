@@ -6,13 +6,26 @@ date: "2018/10/01 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
     lib_dir: libs
+    css: ["kunoichi", "ninjutsu" , "assets/ninpo.css"]
+    self_contained: false
     nature:
+      ratio: "16:9"
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
 ---
 
 ```{r import-setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  dev = "svg",
+  cache = TRUE,
+  cache.path = ".cache/",
+  fig.path = "imgs/",
+  fig.width = 11,
+  fig.height = 5
+)
 options(htmltools.dir.version = FALSE)
 ```
 
@@ -28,7 +41,7 @@ options(htmltools.dir.version = FALSE)
 
 # Importing Data - CSV
 
-```{r Importing Data - CSV, message=FALSE, warning=FALSE}
+```{r Import CSV}
 library(tidyverse) # load full suite of packages for data analysis
 library(babynames) # Full baby name data provided by the SSA
 baby_names <- babynames %>% filter(sex == 'F') # import all female baby names
@@ -39,7 +52,7 @@ baby_names # preview the data
 
 # Importing Data - Multiple Excel Sheets to 1 Data Frame
 
-```{r Importing Data - Multiple Excel Sheets to 1 Data Frame, message=FALSE, warning=FALSE}
+```{r Import Excel}
 library(readxl) # for reading excel files
 path <- "data/gapminder_messy.xlsx"
 combined_data <- excel_sheets(path) %>% 
@@ -60,7 +73,7 @@ tail(combined_data)
 
 You don't have to pay expensive SPSS licenses to analyse your survey data!
 
-```{r, Importing Data - SPSS}
+```{r, Import SPSS}
 library(haven) # for reading SPSS, SAS, STATA files
 survey_data <- read_sav("data/sample_spss_data.sav")
 head(survey_data)
@@ -73,3 +86,33 @@ spread(fQ1bGender, n) %>%
 knitr::kable(format = "html")
 ```
 
+---
+
+# Importing Data - Databases
+
+```{r, Import Databases}
+library(DBI) # for connecting to databases
+con <- dbConnect(
+drv = RMySQL::MySQL(),
+dbname = "shinydemo",
+host = "shiny-demo.csa7qlmguqrf.us-east-1.rds.amazonaws.com",
+username = "guest",
+password = "guest"
+)
+dbListTables(con)
+cities <- tbl(con, "City")
+cities
+```
+
+---
+
+# Web APIs
+
+* Many R packages make it easy for you to pull publicly available data via an API (application programming interface).
+* The code below retrieves data from the UK police database within 1 mile of the coordinates you provide for the latest available month.
+
+```{r}
+library(ukpolice) # R wrapper to the UK Police API
+crime_data <- ukp_crime(lat = 51.533802, lng = -0.092715)
+head(crime_data)
+```

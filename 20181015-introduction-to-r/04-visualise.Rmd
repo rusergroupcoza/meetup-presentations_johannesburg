@@ -6,18 +6,44 @@ date: "2018/10/01 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
     lib_dir: libs
+    css: ["kunoichi", "ninjutsu" , "assets/ninpo.css"]
+    self_contained: false
     nature:
+      ratio: "16:9"
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
 ---
 
 ```{r visualise-setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  dev = "svg",
+  cache = TRUE,
+  cache.path = ".cache/",
+  fig.path = "imgs/",
+  fig.width = 11,
+  fig.height = 5
+)
 options(htmltools.dir.version = FALSE)
 ```
 
-# Slide 1
+# ggplot2
+
+* Combine your data wrangling and chart making into one single process no more pasting data from excel into powerpoint to make or change a chart!
+* Makes it easy to quickly iterate over different ways of mapping your data to shapes, space and colour
+* Programming a chart with code forces you to think about what you are doing and why
+* Allows you to create completley unique charts by adding several different 'layers' of data
+* Not constrained by the chart types available in other software packages
+* Produce publication quality graphics just like...
 
 ---
 
-# Slide 2
+# Data Visulisations
+
+![dataviz](imgs/data-viz.jpg) 
+
+---
+
+

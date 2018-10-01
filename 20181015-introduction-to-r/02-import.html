@@ -4,8 +4,9 @@
     <title>Import</title>
     <meta charset="utf-8">
     <meta name="author" content="Luis de Sousa" />
-    <link href="libs/remark-css/default.css" rel="stylesheet" />
-    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/kunoichi.css" rel="stylesheet" />
+    <link href="libs/remark-css/ninjutsu.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets\ninpo.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -119,14 +120,14 @@ head(survey_data)
 
 ```
 ## # A tibble: 6 x 682
-##   SubsID  responseid respid dCOUNTRY fQ1bGender foQ1aAge_1 dAge   Q2Kids_1
-##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl+lb&gt; &lt;dbl+lbl&gt;       &lt;dbl&gt; &lt;dbl+&gt;    &lt;dbl&gt;
-## 1 218884~        345    347 1        1                  68 3             2
-## 2 235864~        185    187 1        1                  51 2             2
-## 3 237393~        108    110 1        2                  57 3             2
-## 4 250156~        524    526 1        2                  53 2             2
-## 5 254053~        349    351 1        2                  25 1             2
-## 6 200042~        823    825 1        2                  54 2             1
+##   SubsID responseid respid dCOUNTRY fQ1bGender foQ1aAge_1 dAge  Q2Kids_1
+##   &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl+lb&gt; &lt;dbl+lbl&gt;       &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 21888~        345    347 1        1                  68 3            2
+## 2 23586~        185    187 1        1                  51 2            2
+## 3 23739~        108    110 1        2                  57 3            2
+## 4 25015~        524    526 1        2                  53 2            2
+## 5 25405~        349    351 1        2                  25 1            2
+## 6 20004~        823    825 1        2                  54 2            1
 ## # ... with 674 more variables: Q2Kids_2 &lt;dbl&gt;, Q2Kids_3 &lt;dbl&gt;,
 ## #   dKIDS &lt;dbl+lbl&gt;, Q3 &lt;dbl+lbl&gt;, dNET &lt;dbl+lbl&gt;, fQ2UKRegion &lt;dbl+lbl&gt;,
 ## #   dRegionUK &lt;dbl+lbl&gt;, fQ2FRRegion &lt;dbl+lbl&gt;, dRegionFR &lt;dbl+lbl&gt;,
@@ -170,14 +171,14 @@ head(labelled_survey_data)
 
 ```
 ## # A tibble: 6 x 682
-##   SubsID   responseid respid dCOUNTRY fQ1bGender foQ1aAge_1 dAge  Q2Kids_1
-##   &lt;chr&gt;         &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;    &lt;fct&gt;           &lt;dbl&gt; &lt;fct&gt;    &lt;dbl&gt;
-## 1 21888465        345    347 UK       Male               68 55+          2
-## 2 23586407        185    187 UK       Male               51 35-54        2
-## 3 23739306        108    110 UK       Female             57 55+          2
-## 4 25015655        524    526 UK       Female             53 35-54        2
-## 5 25405304        349    351 UK       Female             25 16-34        2
-## 6 20004255        823    825 UK       Female             54 35-54        1
+##   SubsID responseid respid dCOUNTRY fQ1bGender foQ1aAge_1 dAge  Q2Kids_1
+##   &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;    &lt;fct&gt;           &lt;dbl&gt; &lt;fct&gt;    &lt;dbl&gt;
+## 1 21888~        345    347 UK       Male               68 55+          2
+## 2 23586~        185    187 UK       Male               51 35-54        2
+## 3 23739~        108    110 UK       Female             57 55+          2
+## 4 25015~        524    526 UK       Female             53 35-54        2
+## 5 25405~        349    351 UK       Female             25 16-34        2
+## 6 20004~        823    825 UK       Female             54 35-54        1
 ## # ... with 674 more variables: Q2Kids_2 &lt;dbl&gt;, Q2Kids_3 &lt;dbl&gt;,
 ## #   dKIDS &lt;fct&gt;, Q3 &lt;fct&gt;, dNET &lt;fct&gt;, fQ2UKRegion &lt;fct&gt;, dRegionUK &lt;fct&gt;,
 ## #   fQ2FRRegion &lt;fct&gt;, dRegionFR &lt;fct&gt;, fQ2DERegion &lt;fct&gt;,
@@ -238,9 +239,83 @@ knitr::kable(format = "html")
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+
+---
+
+# Importing Data - Databases
+
+
+```r
+library(DBI) # for connecting to databases
+con &lt;- dbConnect(
+drv = RMySQL::MySQL(),
+dbname = "shinydemo",
+host = "shiny-demo.csa7qlmguqrf.us-east-1.rds.amazonaws.com",
+username = "guest",
+password = "guest"
+)
+dbListTables(con)
+```
+
+```
+## [1] "City"            "Country"         "CountryLanguage"
+```
+
+```r
+cities &lt;- tbl(con, "City")
+cities
+```
+
+```
+## # Source:   table&lt;City&gt; [?? x 5]
+## # Database: mysql 10.0.17-MariaDB
+## #   [guest@shiny-demo.csa7qlmguqrf.us-east-1.rds.amazonaws.com:/shinydemo]
+##       ID Name           CountryCode District      Population
+##    &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;              &lt;dbl&gt;
+##  1     1 Kabul          AFG         Kabol            1780000
+##  2     2 Qandahar       AFG         Qandahar          237500
+##  3     3 Herat          AFG         Herat             186800
+##  4     4 Mazar-e-Sharif AFG         Balkh             127800
+##  5     5 Amsterdam      NLD         Noord-Holland     731200
+##  6     6 Rotterdam      NLD         Zuid-Holland      593321
+##  7     7 Haag           NLD         Zuid-Holland      440900
+##  8     8 Utrecht        NLD         Utrecht           234323
+##  9     9 Eindhoven      NLD         Noord-Brabant     201843
+## 10    10 Tilburg        NLD         Noord-Brabant     193238
+## # ... with more rows
+```
+
+---
+
+# Web APIs
+
+* Many R packages make it easy for you to pull publicly available data via an API (application programming interface).
+* The code below retrieves data from the UK police database within 1 mile of the coordinates you provide for the latest available month.
+
+
+```r
+library(ukpolice) # R wrapper to the UK Police API
+crime_data &lt;- ukp_crime(lat = 51.533802, lng = -0.092715)
+head(crime_data)
+```
+
+```
+## # A tibble: 6 x 12
+##   category persistent_id date    lat    long street_id street_name context
+##   &lt;chr&gt;    &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;  
+## 1 anti-so~ ""            2018~  51.5 -0.114  960854    On or near~ ""     
+## 2 anti-so~ ""            2018~  51.5 -0.0826 961467    On or near~ ""     
+## 3 anti-so~ ""            2018~  51.5 -0.0826 961467    On or near~ ""     
+## 4 anti-so~ ""            2018~  51.5 -0.0820 968664    On or near~ ""     
+## 5 anti-so~ ""            2018~  51.5 -0.101  961239    On or near~ ""     
+## 6 anti-so~ ""            2018~  51.5 -0.0938 964580    On or near~ ""     
+## # ... with 4 more variables: id &lt;chr&gt;, location_type &lt;chr&gt;,
+## #   location_subtype &lt;chr&gt;, outcome_status &lt;chr&gt;
+```
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
+"ratio": "16:9",
 "highlightStyle": "github",
 "highlightLines": true,
 "countIncrementalSlides": false
