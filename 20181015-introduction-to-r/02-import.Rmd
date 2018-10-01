@@ -1,10 +1,10 @@
 ---
 title: "Import"
-#subtitle: "⚔<br/>with xaringan"
 author: "Luis de Sousa"
 date: "2018/10/01 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
+    seal: false
     lib_dir: libs
     css: ["kunoichi", "ninjutsu" , "assets/ninpo.css"]
     self_contained: false

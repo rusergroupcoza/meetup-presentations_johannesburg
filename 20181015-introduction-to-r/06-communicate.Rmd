@@ -1,10 +1,10 @@
 ---
 title: "Communicate"
-#subtitle: "⚔<br/>with xaringan"
 author: "Luis de Sousa"
 date: "2018/10/01 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
+    seal: false
     lib_dir: libs
     css: ["kunoichi", "ninjutsu" , "assets/ninpo.css"]
     self_contained: false
@@ -29,6 +29,18 @@ knitr::opts_chunk$set(
 options(htmltools.dir.version = FALSE)
 ```
 
+class: split-70 hide-slide-number
+background-image: url("imgs/HEAD-Top-data-visualization-tools-for-small-business.png")
+background-size: cover
+
+.column.slide-in-left[
+.sliderbox.vmiddle.shade_main.center[
+.font5[Communicate]]]
+.column[
+]
+
+---
+
 # Communication
 
 * All your coding is only going to be useful if you can effectively communicate the findings to a broader audience of stakeholders, in formats they are comfortable with.
@@ -51,7 +63,7 @@ options(htmltools.dir.version = FALSE)
 * MS Word Document
 * MS PowerPoint Slides
 * Dashboards
-* Websites – rusergroup.co.za is written in rmarkdown
+* Websites - rusergroup.co.za is written in rmarkdown
 * Having your report as an executable R script also allows you to paramaterise some variables and automate the generation of several different reports - one for each subset of a data set, for example.
 * Check out this video for a better illustration of the problem and solution to traditional data reporting methods. https://www.youtube.com/watch?v=s3JldKoA0zw
 
