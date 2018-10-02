@@ -31,7 +31,7 @@
     --color-opacity50: rgba(31,60,103,0.5);
     --color-opacity30: rgba(31,60,103,0.3);
     --logo: url("../imgs/RUsersLogo.png");
-    --title-background: url("../bkgs/bg1.jpg");
+    --title-background: url("../imgs/bg1.jpg");
 }
 
 .title-slide {
