@@ -19,3 +19,7 @@ https://rusergroupcoza.github.io/meetup-presentations_johannesburg/20181015-intr
 * devtools::install_github("emitanaka/xaringan")
 * devtools::install_github("emitanaka/icon")
 * devtools::install_github("emitanaka/anicon")
+* devtools::install_github("njtierney/ukpolice")
+* devtools::install_github("hadley/babynames")
+* devtools::install_github("jennybc/gapminder")
+* install.packages("sf") but for those with Ubuntu, you may have trouble but all can be easily resolved by following these [instructions](https://github.com/datacarpentry/r-raster-vector-geospatial/issues/138)
