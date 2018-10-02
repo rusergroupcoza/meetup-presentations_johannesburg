@@ -1,10 +1,10 @@
 ---
 title: "Visualise"
-#subtitle: "⚔<br/>with xaringan"
 author: "Luis de Sousa"
 date: "2018/10/01 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
+    seal: false
     lib_dir: libs
     css: ["kunoichi", "ninjutsu" , "assets/ninpo.css"]
     self_contained: false
@@ -27,7 +27,27 @@ knitr::opts_chunk$set(
   fig.height = 5
 )
 options(htmltools.dir.version = FALSE)
+library(gapminder)
+library(ggplot2)
 ```
+
+class: split-70 hide-slide-number
+background-image: url("imgs/HEAD-Top-data-visualization-tools-for-small-business.png")
+background-size: cover
+
+.column.slide-in-left[
+.sliderbox.vmiddle.shade_main.center[
+.font5[Visualise]]]
+.column[
+]
+
+---
+
+# Data Visualisation
+
+![dataviz](imgs/data-viz.jpg) 
+
+---
 
 # ggplot2
 
@@ -40,10 +60,105 @@ options(htmltools.dir.version = FALSE)
 
 ---
 
-# Data Visulisations
+# With Info
 
-![dataviz](imgs/data-viz.jpg) 
+```{r, results='hide'}
+p <- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+```{r with-info, echo=FALSE, fig.width = 6, fig.height = 7}
+p
+```
 
 ---
 
+# With more info
 
+```{r, results='hide'}
+p <- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+```{r with-more-info, echo=FALSE, fig.width = 6, fig.height = 7}
+p
+```
+
+---
+
+# With even more info
+
+```{r, results='hide'}
+p <- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+```{r with-even-more-info, echo=FALSE, fig.width = 6, fig.height = 7}
+p
+```
+
+---
+
+# With different facets
+
+```{r, results='hide'}
+p <- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+```{r with-different-facets, echo=FALSE, fig.width = 6, fig.height = 7}
+p
+```
+
+---
+
+# With trend lines
+
+```{r, results='hide'}
+p <- ggplot(gapminder) +
+  geom_point(aes(x = continent, y = lifeExp,
+                 label = continent))
+```
+
+```{r with-trend-lines, echo=FALSE, fig.width = 6, fig.height = 7}
+p
+```
+
+---
+
+# **Import** + Transform + Visualise
+
+```{r}
+#https://africaopendata.org/dataset/municipal-demarcation-board-national-boundary-data/resource/9a348186-47d6-4c98-acd4-92b9bf8c1745
+library(sf)
+geo <- st_read("data/LocalMunicipalities2011.shp", quiet = TRUE)
+geo
+```
+
+---
+
+# Import + Transform + **Visualise**
+
+```{r}
+ggplot() + geom_sf(data = geo)
+```
+
+---
+
+# Import + **Transform** + Visualise
+
+```{r}
+
+```
+
+---
+
+# Import + Transform + **Visualise**
+
+```{r}
+
+```

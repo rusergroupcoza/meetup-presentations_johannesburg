@@ -1,0 +1,60 @@
+---
+title: "Front Matter"
+author: "Gemma Dawson and Luis de Sousa"
+date: "2018/10/01 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    seal: false
+    lib_dir: libs
+    css: ["kunoichi", "ninjutsu" , "assets/ninpo.css"]
+    self_contained: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r front-matter-setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  dev = "svg",
+  cache = TRUE,
+  cache.path = ".cache/",
+  fig.path = "imgs/",
+  fig.width = 11,
+  fig.height = 5
+)
+options(htmltools.dir.version = FALSE)
+```
+
+class: middle center bg-main1
+
+# Introduction to R
+
+## Gemma Dawson and Luis de Sousa
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Tool-hacksaw.jpg" width="40%">
+
+---
+
+# Introductions
+Experience with R / Python / Excel
+
+---
+
+# Who are we?
+
+---
+
+# Table of Contents
+
+* Why R? - G
+* Import - L
+* Transform - G
+* Visualise - L
+* Model - G
+* Communicate - L
+* Questions ?
+
