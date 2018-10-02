@@ -27,3 +27,4 @@ rsconnect
 public
 .DS_Store
 /.cache/
+*.html
