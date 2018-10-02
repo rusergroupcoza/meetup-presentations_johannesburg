@@ -64,7 +64,7 @@
 }
 
 
-.title-slide h1 { padding-top: 20%; font-size: 5em;}
+.title-slide h1 { padding-top: 20%; font-size: 5em; color: var(--text-color1);}
 .title-slide h1, .title-slide h2, .title-slide h3  {
   padding-left: 4%!important;
   padding-right: 4%!important;
