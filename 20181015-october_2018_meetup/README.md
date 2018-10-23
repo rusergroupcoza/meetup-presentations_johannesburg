@@ -1,0 +1,1 @@
+Source code for slides can be found at https://github.com/rusergroupcoza/20181015-introduction-to-r
