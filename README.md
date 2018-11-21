@@ -2,7 +2,7 @@
 
 ## 2018
 #### 2018-11-09 Johannesburg R User Group - November 2018
-- [Github Folder](https://github.com/rusergroupcoza/meetup-presentations_johannesburg/tree/master/20181109-november_2018_meetup)
+- [Github Folder](https://github.com/rusergroupcoza/meetup-presentations_johannesburg/tree/master/20181120-november_2018_meetup)
 - [Meetup Link](https://www.meetup.com/Joburg-R-Users-Group/events/255358790/)
 
 #### 2018-10-15 Johannesburg R User Group - October 2018
